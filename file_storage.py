@@ -38,3 +38,18 @@ def download_from_s3(code: int, path:str, bucket_name: str = "ghostdrop"):
     for obj in responses.get("Contents", []):
         filename = os.path.join(path, f"{obj['Key'][len(str_code)+1:]}") 
         s3_client.download_file(bucket_name, obj['Key'], filename)
+    
+def delete_files(code: str):
+
+    s3 = boto3.resource("s3")
+    bucket = s3.Bucket("ghostdrop") #type:ignore
+
+    prefix = code+"/"
+
+    try:
+        objects_to_delete = bucket.objects.filter(Prefix=prefix)
+        response = objects_to_delete.delete()
+    except Exception as e:
+        logging.error(e)
+    
+    print(f"Deleted items: {response}")

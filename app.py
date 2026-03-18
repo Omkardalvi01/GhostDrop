@@ -10,7 +10,7 @@ app.config["MAX_CONTENT_LENGTH"] = 5 * 1000 * 1000  # MAX Limit of file 5 MB
 
 @app.route("/upload", methods=["POST"])
 def upload():
-    code = 1000
+    code = 2000
     if "file" not in request.files:
         return jsonify({"status": "error", "message": "file was not the path"})
 
