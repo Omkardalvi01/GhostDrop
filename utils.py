@@ -1,3 +1,4 @@
+from kv_store import get_value
 ALLOWED_EXTENSIONS = {"txt", "pdf", "png", "jpg", "jpeg", "gif"}
 
 
@@ -9,4 +10,8 @@ def allowed_file(filename) -> bool:
 
 
 def valid_code(code) -> bool:
-    return True
+    if 0  > code or code >= 10000:
+        return False
+    if not get_value(code):
+        return False
+    return True 

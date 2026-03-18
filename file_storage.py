@@ -1,6 +1,6 @@
 import logging
 import os
-
+from kv_store import set_key
 import boto3
 import dotenv
 
@@ -21,11 +21,14 @@ def upload_to_s3(
 
     try:
         s3_client.upload_fileobj(file, bucket_name, obj_name)
-        return True
     except Exception as e:
         logging.error(e)
         return False
-
+    
+    if not set_key(str(code), obj_name):
+        return False
+    
+    return True 
 
 def download_from_s3(code: int, path:str, bucket_name: str = "ghostdrop"):
     str_code = str(code)

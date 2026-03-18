@@ -18,7 +18,7 @@ def upload():
     if file.filename == "" or file.filename is None:
         return jsonify({"status": "error", "message": "No file was selected"})
 
-    print(file)
+    
     filename = secure_filename(file.filename)
     if not allowed_file(filename):
         return jsonify(
@@ -31,6 +31,8 @@ def upload():
     file.filename = filename
     if not upload_to_s3(file, code):
         return jsonify({"status": "error", "message": "Internal Server error"})
+    
+
     return jsonify(
         {
             "status": "success",
