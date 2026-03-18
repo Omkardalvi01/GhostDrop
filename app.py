@@ -2,7 +2,7 @@ from flask import Flask, Response, jsonify, request
 from werkzeug.utils import secure_filename
 import os
 from file_storage import download_from_s3, upload_to_s3
-from utils import allowed_file, valid_code
+from utils import allowed_file, valid_code, make_code
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 5 * 1000 * 1000  # MAX Limit of file 5 MB
@@ -10,7 +10,7 @@ app.config["MAX_CONTENT_LENGTH"] = 5 * 1000 * 1000  # MAX Limit of file 5 MB
 
 @app.route("/upload", methods=["POST"])
 def upload():
-    code = 2000
+    code = make_code()
     if "file" not in request.files:
         return jsonify({"status": "error", "message": "file was not the path"})
 

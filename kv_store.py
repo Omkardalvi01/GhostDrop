@@ -19,3 +19,9 @@ def get_value(code):
     if not key:
         logging.error(msg="Key doesnt exist")
     return key
+
+def get_all_keys():
+    return [key for key in r.scan_iter()]
+
+def get_size():
+    return r.dbsize
