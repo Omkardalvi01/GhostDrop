@@ -1,14 +1,22 @@
 import redis 
 import logging
+from typing import cast 
+
+
 r = redis.Redis(host='localhost', port=6379, decode_responses=True)
 r.config_set('notify-keyspace-events', 'Ex')
 
 LIVE = 60*60*24
-TEST = 30
+TEST = 60
+THRESHOLD = 1 #for test 
+
+with open("ttl_sort.lua", 'r') as f:
+        lua_script = f.read()
+cached_script = r.register_script(lua_script)
 
 def set_key(code : str, path: str) -> bool:
     try: 
-        r.set(code, path, ex= TEST)
+        r.set("code:"+code, path, ex= TEST)
     except Exception as e:
         logging.error(e)
         return False 
@@ -24,4 +32,15 @@ def get_all_keys():
     return [key for key in r.scan_iter()]
 
 def get_size():
-    return r.dbsize
+    from async_task import eviction_signal
+    n = cast(int , r.dbsize())
+    if n > THRESHOLD:
+        eviction_signal.send()
+    return n
+
+def get_least_ttl():
+    return cached_script(args=["code:*"])
+
+def delete_key(key: str):
+    print(f"deleting entry with key {key}")
+    r.delete(key)

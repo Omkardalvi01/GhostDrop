@@ -11,6 +11,8 @@ print("Waiting for file expiration signals...")
 for message in pubsub.listen():
     if message["type"] == "pmessage":
         expired_key = message["data"]
-
-        logging.info(msg=f"Deleted files associated with code {expired_key}")
-        delete_files(expired_key)
+        code = expired_key[5:]
+        logging.info(msg=f"Deleted files associated with code {code}")
+        # starts with prefix code: for fast search
+        
+        delete_files(code)
