@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GhostDrop | Receive Files</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-on-surface": "#9b9d9e",
+                        "surface-container": "#e6e8ea",
+                        "primary-fixed": "#7b9cff",
+                        "on-secondary": "#f3f1ff",
+                        "on-background": "#2c2f30",
+                        "on-secondary-fixed": "#1c248e",
+                        "on-surface-variant": "#595c5d",
+                        "surface-container-highest": "#dadddf",
+                        "primary-fixed-dim": "#668eff",
+                        "on-secondary-container": "#323aa2",
+                        "surface-tint": "#0050d5",
+                        "on-tertiary": "#ffeef8",
+                        "on-tertiary-fixed": "#400040",
+                        "on-error-container": "#570008",
+                        "surface": "#f5f6f7",
+                        "inverse-primary": "#618bff",
+                        "outline": "#757778",
+                        "primary-dim": "#0045bc",
+                        "on-primary-container": "#001d5b",
+                        "surface-container-low": "#eff1f2",
+                        "error-container": "#fb5151",
+                        "secondary": "#4850b7",
+                        "primary-container": "#7b9cff",
+                        "surface-container-high": "#e0e3e4",
+                        "secondary-fixed-dim": "#bbbfff",
+                        "outline-variant": "#abadae",
+                        "tertiary-dim": "#802d7c",
+                        "surface-dim": "#d1d5d7",
+                        "on-surface": "#2c2f30",
+                        "on-secondary-fixed-variant": "#3c44ab",
+                        "inverse-surface": "#0c0f10",
+                        "on-primary": "#f1f2ff",
+                        "error": "#b31b25",
+                        "on-tertiary-fixed-variant": "#6d1a6b",
+                        "secondary-container": "#ccceff",
+                        "on-tertiary-container": "#620e61",
+                        "on-primary-fixed-variant": "#00266f",
+                        "on-primary-fixed": "#000000",
+                        "tertiary-fixed": "#f897ee",
+                        "surface-bright": "#f5f6f7",
+                        "secondary-fixed": "#ccceff",
+                        "secondary-dim": "#3b43aa",
+                        "surface-variant": "#dadddf",
+                        "error-dim": "#9f0519",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#e98adf",
+                        "primary": "#0050d5",
+                        "background": "#f5f6f7",
+                        "tertiary-container": "#f897ee",
+                        "tertiary": "#8e3a89",
+                        "on-error": "#ffefee"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Manrope"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .dark .glass-card {
+            background: rgba(12, 15, 16, 0.8);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #0050d5 0%, #7b9cff 100%);
+        }
+        .dark body {
+            background-color: #06092f;
+            color: #dadddf;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen flex flex-col selection:bg-primary-container/30 transition-colors duration-300">
+<!-- TopAppBar from COMPONENTS_6 -->
+<nav class="fixed top-0 w-full z-50 bg-[#06092f]/80 backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.06)] bg-gradient-to-b from-[#0b0e38] to-transparent">
+<div class="flex justify-between items-center px-8 h-20 w-full">
+<div class="flex items-center">
+<span class="text-2xl font-bold tracking-tighter text-[#90abff] font-manrope">GhostDrop</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2.5 text-slate-400 hover:bg-white/5 transition-all duration-300 rounded-full flex items-center justify-center" id="theme-toggle">
+<span class="material-symbols-outlined hidden dark:block" data-icon="light_mode">light_mode</span>
+<span class="material-symbols-outlined block dark:hidden" data-icon="dark_mode">dark_mode</span>
+</button>
+<button class="p-2.5 text-slate-400 hover:bg-white/5 transition-all duration-300 rounded-full">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="flex-grow flex justify-center px-8 pt-40 pb-16">
+<div class="w-full max-w-xl">
+<!-- Context Switcher -->
+<div class="flex justify-center mb-12">
+<div class="bg-surface-container-low dark:bg-white/5 p-1.5 rounded-full flex items-center gap-1">
+<button class="px-8 py-2.5 rounded-full text-sm font-semibold transition-all text-on-surface-variant hover:text-on-surface dark:text-slate-400 dark:hover:text-white">
+                        Send
+                    </button>
+<button class="px-8 py-2.5 rounded-full text-sm font-semibold transition-all bg-surface-container-lowest dark:bg-white/10 text-primary dark:text-[#90abff] shadow-sm">
+                        Receive
+                    </button>
+</div>
+</div>
+<!-- Main Receive Card -->
+<div class="glass-card rounded-xl p-10 border border-outline-variant/10 shadow-[0_20px_40px_rgba(12,15,16,0.05)] relative overflow-hidden">
+<!-- Editorial Header -->
+<div class="mb-12">
+<span class="font-label text-xs uppercase tracking-[0.2em] text-on-surface-variant dark:text-slate-400 block mb-2">Secure Retrieval</span>
+<h1 class="text-4xl font-extrabold font-headline tracking-tight text-on-surface dark:text-white leading-tight">
+                        Enter Code to<br/>Receive Assets.
+                    </h1>
+</div>
+<!-- Input Section -->
+<div class="space-y-10">
+<div class="flex justify-between gap-4">
+<!-- Individual Digit Boxes -->
+<div class="flex-1 aspect-square max-w-[80px]">
+<input class="w-full h-full text-center text-3xl font-bold font-headline rounded-xl bg-surface-container-high dark:bg-white/5 border-none focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest dark:focus:bg-white/10 transition-all text-on-surface dark:text-white" maxlength="1" placeholder="0" type="text"/>
+</div>
+<div class="flex-1 aspect-square max-w-[80px]">
+<input class="w-full h-full text-center text-3xl font-bold font-headline rounded-xl bg-surface-container-high dark:bg-white/5 border-none focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest dark:focus:bg-white/10 transition-all text-on-surface dark:text-white" maxlength="1" placeholder="0" type="text"/>
+</div>
+<div class="flex-1 aspect-square max-w-[80px]">
+<input class="w-full h-full text-center text-3xl font-bold font-headline rounded-xl bg-surface-container-high dark:bg-white/5 border-none focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest dark:focus:bg-white/10 transition-all text-on-surface dark:text-white" maxlength="1" placeholder="0" type="text"/>
+</div>
+<div class="flex-1 aspect-square max-w-[80px]">
+<input class="w-full h-full text-center text-3xl font-bold font-headline rounded-xl bg-surface-container-high dark:bg-white/5 border-none focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest dark:focus:bg-white/10 transition-all text-on-surface dark:text-white" maxlength="1" placeholder="0" type="text"/>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full primary-gradient py-5 rounded-xl flex items-center justify-center gap-3 text-on-primary font-bold tracking-tight hover:opacity-90 transition-opacity group">
+<span class="material-symbols-outlined text-xl" data-icon="download">download</span>
+                        Download All Files
+                        <span class="material-symbols-outlined text-lg opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Subtle Decorative Background Element -->
+<div class="absolute -bottom-20 -right-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+</div>
+<!-- Help/Information Text -->
+<p class="text-center mt-8 text-on-surface-variant dark:text-slate-500 font-label text-xs tracking-wide">
+                Codes are case-sensitive and valid for 24 hours. Need help? <a class="text-primary dark:text-[#90abff] hover:underline" href="#">Contact Support</a>
+</p>
+</div>
+</main>
+<!-- Footer from COMPONENTS_6 -->
+<footer class="w-full bg-[#06092f] border-t border-[#42456c]/15 pt-8 pb-12">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 max-w-7xl mx-auto">
+<div class="flex flex-col gap-2 mb-6 md:mb-0">
+<span class="text-lg font-bold text-[#90abff]">GhostDrop</span>
+<span class="text-sm font-manrope text-slate-500 uppercase tracking-widest">© 2024 GhostDrop. Ethereal Precision.</span>
+</div>
+<div class="flex gap-8">
+<a class="text-sm font-manrope text-slate-500 uppercase tracking-widest hover:text-[#90abff] transition-colors focus:outline-none" href="#">Privacy</a>
+<a class="text-sm font-manrope text-slate-500 uppercase tracking-widest hover:text-[#90abff] transition-colors focus:outline-none" href="#">Terms</a>
+<a class="text-sm font-manrope text-slate-500 uppercase tracking-widest hover:text-[#90abff] transition-colors focus:outline-none" href="#">Contact</a>
+</div>
+</div>
+</footer>
+<script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        themeToggle.addEventListener('click', () => {
+            if (html.classList.contains('light')) {
+                html.classList.remove('light');
+                html.classList.add('dark');
+            } else {
+                html.classList.remove('dark');
+                html.classList.add('light');
+            }
+        });
+    </script>
+</body></html>

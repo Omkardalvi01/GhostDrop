@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+  }
+  .dark .glass-card {
+    background: rgba(12, 15, 16, 0.8);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+  .primary-gradient {
+    background: linear-gradient(135deg, #0050d5 0%, #7b9cff 100%);
+  }
+  .ghost-shadow {
+    box-shadow: 0 20px 40px rgba(12, 15, 16, 0.05);
+  }
+}
+
+html.dark body {
+  background-color: #000000;
+  color: #dadddf;
+}

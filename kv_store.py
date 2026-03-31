@@ -2,8 +2,9 @@ import redis
 import logging
 from typing import cast 
 
-
-r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+import os
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+r = redis.from_url(REDIS_URL, decode_responses=True)
 r.config_set('notify-keyspace-events', 'Ex')
 
 LIVE = 60*60*24
@@ -23,7 +24,7 @@ def set_key(code : str, path: str) -> bool:
     return True 
 
 def get_value(code):
-    key = r.get(code)
+    key = r.get("code:" + str(code))
     if not key:
         logging.error(msg="Key doesnt exist")
     return key

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GhostDrop | Send Files</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-on-surface": "#9b9d9e",
+              "surface-container": "#e6e8ea",
+              "primary-fixed": "#7b9cff",
+              "on-secondary": "#f3f1ff",
+              "on-background": "#2c2f30",
+              "on-secondary-fixed": "#1c248e",
+              "on-surface-variant": "#595c5d",
+              "surface-container-highest": "#dadddf",
+              "primary-fixed-dim": "#668eff",
+              "on-secondary-container": "#323aa2",
+              "surface-tint": "#0050d5",
+              "on-tertiary": "#ffeef8",
+              "on-tertiary-fixed": "#400040",
+              "on-error-container": "#570008",
+              "surface": "#f5f6f7",
+              "inverse-primary": "#618bff",
+              "outline": "#757778",
+              "primary-dim": "#0045bc",
+              "on-primary-container": "#001d5b",
+              "surface-container-low": "#eff1f2",
+              "error-container": "#fb5151",
+              "secondary": "#4850b7",
+              "primary-container": "#7b9cff",
+              "surface-container-high": "#e0e3e4",
+              "secondary-fixed-dim": "#bbbfff",
+              "outline-variant": "#abadae",
+              "tertiary-dim": "#802d7c",
+              "surface-dim": "#d1d5d7",
+              "on-surface": "#2c2f30",
+              "on-secondary-fixed-variant": "#3c44ab",
+              "inverse-surface": "#0c0f10",
+              "on-primary": "#f1f2ff",
+              "error": "#b31b25",
+              "on-tertiary-fixed-variant": "#6d1a6b",
+              "secondary-container": "#ccceff",
+              "on-tertiary-container": "#620e61",
+              "on-primary-fixed-variant": "#00266f",
+              "on-primary-fixed": "#000000",
+              "tertiary-fixed": "#f897ee",
+              "surface-bright": "#f5f6f7",
+              "secondary-fixed": "#ccceff",
+              "secondary-dim": "#3b43aa",
+              "surface-variant": "#dadddf",
+              "error-dim": "#9f0519",
+              "surface-container-lowest": "#ffffff",
+              "tertiary-fixed-dim": "#e98adf",
+              "primary": "#0050d5",
+              "background": "#f5f6f7",
+              "tertiary-container": "#f897ee",
+              "tertiary": "#8e3a89",
+              "on-error": "#ffefee"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .ghost-shadow {
+            box-shadow: 0 20px 40px rgba(12, 15, 16, 0.05);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #0050d5 0%, #7b9cff 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#06092f]/80 backdrop-blur-xl font-manrope tracking-tight shadow-[0_12px_32px_rgba(0,0,0,0.06)] bg-gradient-to-b from-[#0b0e38] to-transparent">
+<nav class="flex justify-between items-center px-8 h-20 w-full">
+<div class="text-2xl font-bold tracking-tighter text-[#90abff]">
+                GhostDrop
+            </div>
+<div class="flex items-center space-x-4">
+<button class="p-2 text-on-surface-variant hover:bg-white/5 transition-all duration-300 rounded-full active:scale-95">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-white/5 transition-all duration-300 rounded-full active:scale-95" id="theme-toggle">
+<span class="material-symbols-outlined dark:hidden">dark_mode</span>
+<span class="material-symbols-outlined hidden dark:block">light_mode</span>
+</button>
+</div>
+</nav>
+</header>
+<main class="flex-grow flex items-center justify-center px-6 py-24">
+<div class="w-full max-w-xl">
+<!-- Central Container -->
+<div class="bg-surface-container-lowest rounded-full ghost-shadow overflow-hidden flex flex-col p-2">
+<!-- Toggle Switch -->
+<div class="flex p-1.5 bg-surface-container-low rounded-full w-fit mx-auto mb-8 mt-4">
+<button class="px-8 py-2.5 bg-surface-container-lowest rounded-full text-on-surface font-semibold text-sm shadow-sm transition-all">
+                        Send
+                    </button>
+<button class="px-8 py-2.5 text-on-surface-variant font-medium text-sm hover:text-on-surface transition-colors">
+                        Receive
+                    </button>
+</div>
+<div class="px-8 pb-10">
+<!-- Drop Zone -->
+<div class="group relative flex flex-col items-center justify-center w-full aspect-[16/9] border-2 border-dashed border-outline-variant/30 rounded-full bg-surface hover:bg-surface-container-low transition-all cursor-pointer">
+<div class="p-6 bg-surface-container-lowest rounded-full mb-4 shadow-sm group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">upload_file</span>
+</div>
+<h2 class="font-headline font-bold text-xl tracking-tight text-on-surface mb-1">Click to select or drag files here</h2>
+<p class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Max file size: 20 GB</p>
+</div>
+<!-- Example File List -->
+<div class="mt-12 space-y-4">
+<div class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low/50 hover:bg-primary-container/20 group transition-colors cursor-default">
+<div class="flex items-center space-x-4">
+<div class="w-10 h-10 flex items-center justify-center bg-surface-container-lowest rounded-lg">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">description</span>
+</div>
+<div>
+<h3 class="text-on-surface font-semibold group-hover:text-primary transition-colors">ProjectProposal.pdf</h3>
+<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-wider">2.4 MB</p>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors p-2">
+<span class="material-symbols-outlined text-xl">close</span>
+</button>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low/50 hover:bg-primary-container/20 group transition-colors cursor-default">
+<div class="flex items-center space-x-4">
+<div class="w-10 h-10 flex items-center justify-center bg-surface-container-lowest rounded-lg">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">folder_zip</span>
+</div>
+<div>
+<h3 class="text-on-surface font-semibold group-hover:text-primary transition-colors">DesignAssets.zip</h3>
+<p class="font-label text-[10px] text-on-surface-variant uppercase tracking-wider">128.5 MB</p>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors p-2">
+<span class="material-symbols-outlined text-xl">close</span>
+</button>
+</div>
+</div>
+<!-- Settings Inputs -->
+<div class="mt-10 space-y-6">
+<div class="relative">
+<input class="w-full bg-surface-container-high border-none rounded-xl px-6 py-4 font-body text-on-surface placeholder:text-on-surface-variant/60 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all" placeholder="Email to" type="email"/>
+</div>
+<div class="relative">
+<textarea class="w-full bg-surface-container-high border-none rounded-xl px-6 py-4 font-body text-on-surface placeholder:text-on-surface-variant/60 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all resize-none" placeholder="Add a message" rows="2"></textarea>
+</div>
+</div>
+<!-- Primary Send Button -->
+<button class="w-full mt-10 primary-gradient text-on-primary py-5 rounded-full font-headline font-extrabold text-lg tracking-tight hover:opacity-90 transition-all flex items-center justify-center space-x-3 ghost-shadow">
+<span>Send Files</span>
+<span class="material-symbols-outlined text-2xl">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-[#06092f] border-t border-[#42456c]/15 py-12">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 max-w-7xl mx-auto">
+<div class="text-lg font-bold text-[#90abff] mb-4 md:mb-0">
+                GhostDrop
+            </div>
+<div class="text-sm font-manrope text-slate-500 uppercase tracking-widest mb-4 md:mb-0">
+                © 2024 GhostDrop. Ethereal Precision.
+            </div>
+<div class="flex space-x-8 text-sm font-manrope uppercase tracking-widest">
+<a class="text-slate-500 hover:text-[#90abff] transition-colors focus:outline-none" href="#">Privacy</a>
+<a class="text-slate-500 hover:text-[#90abff] transition-colors focus:outline-none" href="#">Terms</a>
+<a class="text-slate-500 hover:text-[#90abff] transition-colors focus:outline-none" href="#">Contact</a>
+</div>
+</div>
+</footer>
+<script>
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+    </script>
+</body></html>
