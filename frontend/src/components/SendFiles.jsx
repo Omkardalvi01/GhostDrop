@@ -34,7 +34,8 @@ export default function SendFiles() {
     files.forEach((file) => {
       formData.append('files', file); 
     });
-
+    
+    formData.append('message', message)
     try {
       const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
       const response = await fetch(`${API_BASE}/upload`, {
@@ -46,6 +47,7 @@ export default function SendFiles() {
       if (data.status === 'success') {
         setUploadResult({ success: true, message: `Success! Code: ${data.code}` });
         setFiles([]);
+        setMessage('')
       } else {
         setUploadResult({ success: false, message: data.message || 'Upload failed.' });
       }
