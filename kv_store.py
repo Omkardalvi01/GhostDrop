@@ -6,7 +6,10 @@ import os
 
 REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 r = redis.from_url(REDIS_URL, decode_responses=True)
-r.config_set("notify-keyspace-events", "Ex")
+try:
+    r.config_set("notify-keyspace-events", "Ex")
+except Exception as e:
+    logging.warning(f"Could not set notify-keyspace-events on Redis: {e}")
 
 LIVE = 60 * 60 * 24
 TEST = 60

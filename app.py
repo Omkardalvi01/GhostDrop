@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
-from file_storage import download_from_s3, upload_to_s3, s3_client
+from file_storage import download_from_s3, upload_to_s3, s3_client, S3_BUCKET_NAME
 from utils import allowed_file, valid_code, make_code, NamedBytes
 from logs import add_to_logs, get_metadata
 
@@ -82,7 +82,7 @@ def download():
         return jsonify({"status": "failed", "message": f"code {code} is not valid"})
 
     str_code = str(code_int)
-    responses = s3_client.list_objects_v2(Bucket="ghostdrop", Prefix=f"{str_code}/")
+    responses = s3_client.list_objects_v2(Bucket=S3_BUCKET_NAME, Prefix=f"{str_code}/")
 
     files_data = []
     for obj in responses.get("Contents", []):
@@ -90,7 +90,7 @@ def download():
         url = s3_client.generate_presigned_url(
             "get_object",
             Params={
-                "Bucket": "ghostdrop",
+                "Bucket": S3_BUCKET_NAME,
                 "Key": obj["Key"],
                 "ResponseContentDisposition": f'attachment; filename="{filename}"',
             },

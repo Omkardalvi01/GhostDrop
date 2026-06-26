@@ -32,7 +32,7 @@ export default function ReceiveFiles() {
     setResultMessage(null);
 
     try {
-      const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000' : '');
       const response = await fetch(`${API_BASE}/download?code=${fullCode}`);
       const data = await response.json();
       

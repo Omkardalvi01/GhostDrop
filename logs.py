@@ -1,7 +1,9 @@
 import sqlite3
 import logging
+import os
 
-conn = sqlite3.Connection("log.db", check_same_thread=False)
+DB_PATH = os.getenv("LOG_DB_PATH", "log.db")
+conn = sqlite3.Connection(DB_PATH, check_same_thread=False)
 conn.row_factory = sqlite3.Row
 
 conn.execute("""CREATE TABLE IF NOT EXISTS LOGS(

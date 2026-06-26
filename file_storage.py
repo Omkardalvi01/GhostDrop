@@ -6,6 +6,8 @@ import dotenv
 
 dotenv.load_dotenv()
 
+S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME", "ghostdrop")
+
 s3_client = boto3.client(
     "s3",
     aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
@@ -14,7 +16,7 @@ s3_client = boto3.client(
 
 
 def upload_to_s3(
-    file, code: int, bucket_name: str = "ghostdrop", obj_name: str = ""
+    file, code: int, bucket_name: str = S3_BUCKET_NAME, obj_name: str = ""
 ) -> bool:
     if not obj_name:
         obj_name = f"{str(code)}/" + os.path.basename(file.filename)
@@ -31,7 +33,7 @@ def upload_to_s3(
     return True
 
 
-def download_from_s3(code: int, path: str, bucket_name: str = "ghostdrop"):
+def download_from_s3(code: int, path: str, bucket_name: str = S3_BUCKET_NAME):
     str_code = str(code)
     responses = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=f"{str_code}/")
 
@@ -43,7 +45,7 @@ def download_from_s3(code: int, path: str, bucket_name: str = "ghostdrop"):
 def delete_files(code: str):
 
     s3 = boto3.resource("s3")
-    bucket = s3.Bucket("ghostdrop")  # type:ignore
+    bucket = s3.Bucket(S3_BUCKET_NAME)  # type:ignore
 
     prefix = code + "/"
 
@@ -53,3 +55,4 @@ def delete_files(code: str):
         print(response)
     except Exception as e:
         logging.error(e)
+

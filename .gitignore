@@ -12,6 +12,7 @@ TODO.txt
 .env
 node_modules/
 .dockerignore 
-Dockerfile 
 .vscode
 .gitignore
+deploy/
+DEPLOYMENT.md
