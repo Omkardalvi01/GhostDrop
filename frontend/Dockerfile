@@ -14,18 +14,14 @@ COPY src/ ./src/
 # Build production assets (dist folder)
 RUN npm run build
 
-# Stage 2: Serve the application using Nginx
-FROM nginx:alpine
+# Stage 2: Serve the application using Caddy
+FROM caddy:alpine
 
-# Remove default nginx configuration
-RUN rm /etc/nginx/conf.d/default.conf
+# Copy custom Caddy configuration
+COPY Caddyfile /etc/caddy/Caddyfile
 
-# Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Copy build artifacts to nginx public folder
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Copy build artifacts to Caddy public folder
+COPY --from=builder /app/dist /usr/share/caddy
 
 EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 443

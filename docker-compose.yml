@@ -47,9 +47,17 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
+      - "443:443"
     restart: always
+    environment:
+      - DOMAIN_NAME
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
     depends_on:
       - backend
 
 volumes:
   backend-data:
+  caddy-data:
+  caddy-config:

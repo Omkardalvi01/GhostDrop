@@ -1,0 +1,15 @@
+{$DOMAIN_NAME} {
+    # Compress text responses
+    encode gzip
+
+    # Serve static frontend files
+    root * /usr/share/caddy
+    file_server {
+        try_files {path} {path}/ /index.html
+    }
+
+    # Reverse proxy API endpoints to the Flask backend
+    reverse_proxy /upload backend:5000
+    reverse_proxy /download backend:5000
+    reverse_proxy /metadata backend:5000
+}
