@@ -6,7 +6,7 @@ import dotenv
 
 dotenv.load_dotenv()
 
-S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME", "ghostdrop")
+S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME", "ghostdrop-files")
 
 s3_client = boto3.client(
     "s3",

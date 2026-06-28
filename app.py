@@ -11,7 +11,7 @@ app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # MAX Limit of file 5 MB
 # Manual limit of 10 files
 
 
-@app.route("/upload", methods=["POST"])
+@app.route("/api/upload", methods=["POST"])
 def upload():
     str_file = None
     message = request.form.get("message", "")
@@ -70,7 +70,7 @@ def upload():
     )
 
 
-@app.route("/download", methods=["GET"])
+@app.route("/api/download", methods=["GET"])
 def download():
     code = request.args.get("code")
 
@@ -104,7 +104,7 @@ def download():
     return jsonify({"status": "success", "files": files_data})
 
 
-@app.route("/metadata", methods=["GET"])
+@app.route("/api/metadata", methods=["GET"])
 def get_data():
     files_transfer, data_transfer = get_metadata()
     data_transfer = data_transfer * (10**-6)

@@ -16,3 +16,4 @@ node_modules/
 .gitignore
 deploy/
 DEPLOYMENT.md
+run_services.sh
