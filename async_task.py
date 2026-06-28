@@ -1,30 +1,41 @@
 from celery import Celery
 from celery.signals import worker_ready
-from blinker import signal
-from kv_store import get_least_ttl, delete_key, REDIS_URL
+from kv_store import REDIS_URL, delete_key
 import logging
 import threading
 import redis
 from file_storage import delete_files
+from logs import get_expired_uploads, mark_upload_cleaned
 
 celery = Celery(broker=REDIS_URL)
-eviction_signal = signal("eviction-required")
-FILES_TO_REMOVE = 1
+celery.conf.update(
+    timezone="UTC",
+    beat_schedule={
+        "reconcile-expired-uploads": {
+            "task": "async_task.reconcile_expired_uploads",
+            "schedule": 60.0,
+        }
+    },
+)
 
 
-@eviction_signal.connect
-def trigger_eviction(sender, **extra):
-    eviction.delay()  # type:ignore
+def cleanup_code(code: str, source: str) -> bool:
+    deleted = delete_files(code)
+    if not deleted:
+        logging.warning("Failed to delete S3 objects for code %s from %s", code, source)
+        return False
+
+    delete_key(f"code:{code}")
+    mark_upload_cleaned(code)
+    logging.info("Deleted files associated with code %s via %s", code, source)
+    return True
 
 
-@celery.task
-def eviction():
-    entries = get_least_ttl()
-    for key, ttl in entries[:FILES_TO_REMOVE]:  # type: ignore
-        print(f"deleting entry with key {key} and ttl {ttl} ")
-        logging.info(msg=f"deleting entry with key {key} and ttl {ttl} ")
-        delete_key(key=key)
-        delete_files(code=key[5:])
+@celery.task(name="async_task.reconcile_expired_uploads")
+def reconcile_expired_uploads():
+    entries = get_expired_uploads()
+    for entry in entries:
+        cleanup_code(str(entry["CODE"]), "periodic sweep")
 
 
 @worker_ready.connect
@@ -37,9 +48,10 @@ def start_listener(sender, **kwargs):
         for message in pubsub.listen():
             if message["type"] == "pmessage":
                 expired_key = message["data"]
+                if not str(expired_key).startswith("code:"):
+                    continue
                 code = expired_key[5:]
-                logging.info(msg=f"Deleted files associated with code {code}")
-                delete_files(code)
+                cleanup_code(code, "redis expiry listener")
 
     thread = threading.Thread(target=listener, daemon=True)
     thread.start()

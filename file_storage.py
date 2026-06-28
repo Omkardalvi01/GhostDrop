@@ -28,6 +28,10 @@ def upload_to_s3(
         return False
 
     if not set_key(str(code), obj_name):
+        try:
+            s3_client.delete_object(Bucket=bucket_name, Key=obj_name)
+        except Exception as e:
+            logging.error(e)
         return False
 
     return True
@@ -42,7 +46,7 @@ def download_from_s3(code: int, path: str, bucket_name: str = S3_BUCKET_NAME):
         s3_client.download_file(bucket_name, obj["Key"], filename)
 
 
-def delete_files(code: str):
+def delete_files(code: str) -> bool:
 
     s3 = boto3.resource("s3")
     bucket = s3.Bucket(S3_BUCKET_NAME)  # type:ignore
@@ -53,6 +57,7 @@ def delete_files(code: str):
         objects_to_delete = bucket.objects.filter(Prefix=prefix)
         response = objects_to_delete.delete()
         print(response)
+        return True
     except Exception as e:
         logging.error(e)
-
+        return False

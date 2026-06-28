@@ -6,6 +6,7 @@ export default function SendFiles() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadResult, setUploadResult] = useState(null);
   const fileInputRef = useRef(null);
+  const canSend = files.length > 0 || message.trim().length > 0;
 
   const handleFileChange = (e) => {
     if (e.target.files) {
@@ -26,7 +27,7 @@ export default function SendFiles() {
   };
 
   const handleSend = async () => {
-    if (files.length === 0) return;
+    if (files.length === 0 && !message.trim()) return;
     setIsUploading(true);
     setUploadResult(null);
 
@@ -126,8 +127,8 @@ export default function SendFiles() {
         {/* Primary Send Button */}
         <button 
           onClick={handleSend}
-          disabled={files.length === 0 || isUploading}
-          className={`w-full mt-10 primary-gradient text-on-primary py-5 rounded-full font-headline font-extrabold text-lg tracking-tight transition-all flex items-center justify-center space-x-3 ghost-shadow ${files.length === 0 || isUploading ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}`}
+          disabled={!canSend || isUploading}
+          className={`w-full mt-10 primary-gradient text-on-primary py-5 rounded-full font-headline font-extrabold text-lg tracking-tight transition-all flex items-center justify-center space-x-3 ghost-shadow ${!canSend || isUploading ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}`}
         >
           <span>{isUploading ? 'Sending...' : 'Send Files'}</span>
           {!isUploading && <span className="material-symbols-outlined text-2xl">arrow_forward</span>}

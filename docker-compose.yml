@@ -41,6 +41,25 @@ services:
     depends_on:
       - redis
 
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A async_task beat --loglevel=info
+    restart: always
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_DB_PATH=/data/log.db
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_DEFAULT_REGION
+      - S3_BUCKET_NAME
+      - FILE_TTL_SECONDS=86400
+    volumes:
+      - backend-data:/data
+    depends_on:
+      - redis
+
   frontend:
     build:
       context: ./frontend

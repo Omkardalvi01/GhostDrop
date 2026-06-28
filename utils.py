@@ -22,7 +22,12 @@ def valid_code(code) -> bool:
 def make_code() -> int:
 
     size = get_size()
-    if size == 9999:
+
+    if not isinstance(size, int):
+        raise Exception("get_size() didnt return int")
+        return -1 
+    
+    if size >= 9999:
         raise Exception("MAX LIMIT reached")
         return -1
 

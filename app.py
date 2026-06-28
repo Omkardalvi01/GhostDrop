@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
-from file_storage import download_from_s3, upload_to_s3, s3_client, S3_BUCKET_NAME
+from file_storage import upload_to_s3, s3_client, S3_BUCKET_NAME, delete_files
+from kv_store import delete_key
 from utils import allowed_file, valid_code, make_code, NamedBytes
 from logs import add_to_logs, get_metadata
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -11,7 +13,7 @@ app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # MAX Limit of file 5 MB
 # Manual limit of 10 files
 
 
-@app.route("/api/upload", methods=["POST"])
+@app.route("/upload", methods=["POST"])
 def upload():
     str_file = None
     message = request.form.get("message", "")
@@ -47,6 +49,8 @@ def upload():
 
         file.filename = filename  # type: ignore
         if not upload_to_s3(file, code):
+            delete_files(str(code))
+            delete_key(f"code:{code}")
             return jsonify(
                 {
                     "status": "error",
@@ -57,9 +61,29 @@ def upload():
         uploaded_files.append(filename)
 
     if str_file:
-        upload_to_s3(str_file, code)
+        str_file.seek(0, 2)
+        sz += str_file.tell()
+        str_file.seek(0)
+        if not upload_to_s3(str_file, code):
+            delete_files(str(code))
+            delete_key(f"code:{code}")
+            return jsonify(
+                {
+                    "status": "error",
+                    "message": "Internal Server error uploading message.txt",
+                }
+            )
+        uploaded_files.append("message.txt")
 
-    add_to_logs(request.remote_addr, code, len(actual_files), sz)
+    if not add_to_logs(request.remote_addr, code, len(uploaded_files), sz):
+        delete_files(str(code))
+        delete_key(f"code:{code}")
+        return jsonify(
+            {
+                "status": "error",
+                "message": "Internal Server error saving upload metadata",
+            }
+        )
 
     return jsonify(
         {
@@ -70,14 +94,18 @@ def upload():
     )
 
 
-@app.route("/api/download", methods=["GET"])
+@app.route("/download", methods=["GET"])
 def download():
     code = request.args.get("code")
 
     if not code:
         return jsonify({"status": "failed", "message": "code is required"})
 
-    code_int = int(code)
+    try:
+        code_int = int(code)
+    except ValueError:
+        return jsonify({"status": "failed", "message": f"code {code} is not valid"})
+
     if not valid_code(code_int):
         return jsonify({"status": "failed", "message": f"code {code} is not valid"})
 
@@ -104,7 +132,7 @@ def download():
     return jsonify({"status": "success", "files": files_data})
 
 
-@app.route("/api/metadata", methods=["GET"])
+@app.route("/metadata", methods=["GET"])
 def get_data():
     files_transfer, data_transfer = get_metadata()
     data_transfer = data_transfer * (10**-6)
@@ -114,4 +142,4 @@ def get_data():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(port=int(os.getenv("PORT", "5000")))
