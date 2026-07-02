@@ -1,6 +1,11 @@
-from kv_store import get_value, get_all_keys, get_size
-import random
 import io
+import random
+from logging import raiseExceptions
+
+from async_task import cleanup_code
+from kv_store import get_all_keys, get_size, get_value
+from thres_eviction import dequeue
+
 # ALLOWED_EXTENSIONS = {"txt", "pdf", "png", "jpg", "jpeg", "gif"}
 
 
@@ -25,11 +30,13 @@ def make_code() -> int:
 
     if not isinstance(size, int):
         raise Exception("get_size() didnt return int")
-        return -1 
-    
+
     if size >= 9999:
-        raise Exception("MAX LIMIT reached")
-        return -1
+        code = dequeue()
+        if not cleanup_code(code=str(code), source="thres_eviction"):
+            raise Exception("space exhausted")
+
+        return code
 
     code = random.randint(1, 9999)
     exisiting_codes = get_all_keys()

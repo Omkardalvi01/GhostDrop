@@ -1,11 +1,14 @@
+import os
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
-from file_storage import upload_to_s3, s3_client, S3_BUCKET_NAME, delete_files
+
+from file_storage import S3_BUCKET_NAME, delete_files, s3_client, upload_to_s3
 from kv_store import delete_key
-from utils import allowed_file, valid_code, make_code, NamedBytes
 from logs import add_to_logs, get_metadata
-import os
+from thres_eviction import enqueue, refresh
+from utils import NamedBytes, allowed_file, make_code, valid_code
 
 app = Flask(__name__)
 CORS(app)
@@ -85,6 +88,8 @@ def upload():
             }
         )
 
+    enqueue(code)
+
     return jsonify(
         {
             "status": "success",
@@ -128,6 +133,8 @@ def download():
 
     if not files_data:
         return jsonify({"status": "failed", "message": "No files found for this code."})
+
+    refresh(code)
 
     return jsonify({"status": "success", "files": files_data})
 
